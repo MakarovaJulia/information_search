@@ -4,6 +4,7 @@ from nltk.corpus import stopwords
 import pymorphy2
 import re
 from bs4 import BeautifulSoup
+
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('wordnet')
@@ -11,8 +12,9 @@ nltk.download('wordnet')
 # список токенов
 tokens = list()
 
+
 def get_tokens(page):
-    with open(page, 'r') as file:
+    with open(page, 'r', encoding='utf-8') as file:
         html_content = file.read()
 
     soup = BeautifulSoup(html_content, 'html.parser').find('body')
@@ -40,9 +42,9 @@ def get_tokens(page):
 
     return tokens_in_page
 
+
 # группировка токенов по леммам
 def group_tokens_by_lemmas(unique_tokens):
-
     # инициализация объекта pymorphy2 для лемматизации
     morph = pymorphy2.MorphAnalyzer()
     lemma_tokens = {}
@@ -60,24 +62,29 @@ def group_tokens_by_lemmas(unique_tokens):
     return lemma_tokens
 
 
-# извлечение токенов из каждой страницы
-for i in range(1, 150):
-    page_tokens = get_tokens(f'html/{i}.html')
-    tokens.extend(page_tokens)
+def main():
+    # извлечение токенов из каждой страницы
+    for i in range(1, 150):
+        page_tokens = get_tokens(f'html/{i}.html')
+        tokens.extend(page_tokens)
 
-# список уникальных токенов
-unique_tokens = list(set(tokens))
+    # список уникальных токенов
+    unique_tokens = list(set(tokens))
 
-# группировка токенов по леммам
-grouped_tokens = group_tokens_by_lemmas(unique_tokens)
+    # группировка токенов по леммам
+    grouped_tokens = group_tokens_by_lemmas(unique_tokens)
 
-# запись уникальных токенов в файл
-with open('tokens.txt', 'w', encoding='utf-8') as file:
-    for token in unique_tokens:
-        file.write(token + '\n')
+    # запись уникальных токенов в файл
+    with open('tokens.txt', 'w', encoding='utf-8') as file:
+        for token in unique_tokens:
+            file.write(token + '\n')
 
-# запись групп токенов по леммам в файл
-with open('lemmas.txt', 'w', encoding='utf-8') as file:
-    for key, values in grouped_tokens.items():
-        values_str = ' '.join(values)
-        file.write(f"{key}: {values_str}\n")
+    # запись групп токенов по леммам в файл
+    with open('lemmas.txt', 'w', encoding='utf-8') as file:
+        for key, values in grouped_tokens.items():
+            values_str = ' '.join(values)
+            file.write(f"{key}: {values_str}\n")
+
+
+if __name__ == "__main__":
+    main()
