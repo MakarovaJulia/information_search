@@ -9,7 +9,7 @@ def create_inverted_index(lemmas):
         terms = f.read().splitlines()
 
     # Проходим по всем файлам
-    for i in range(1, 150):
+    for i in range(1, 151):
         html_file = f'html/{i}.html'
         text = get_tokens(html_file)
         # Проверяем каждое слово из списка в тексте

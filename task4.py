@@ -24,7 +24,7 @@ number_of_docs = 150
 def create_inverted_index_tokens():
     index = {}
 
-    for i in range(1, number_of_docs):
+    for i in range(1, number_of_docs + 1):
         html_file = f'html/{i}.html'
         tokens = get_tokens(html_file)
         unique_tokens = list(set(tokens))
@@ -74,7 +74,7 @@ def calculate_idf(counts, pages):
 
 
 def main():
-    create_inverted_index_tokens()
+    # create_inverted_index_tokens()
 
     if not os.path.exists(lemmas_tf_idf):
         os.makedirs(lemmas_tf_idf)
@@ -89,7 +89,7 @@ def main():
         tokens_count_per_pages = inverted_index_count(file)
 
     # Обработка каждого файла выкачки
-    for i in range(1, number_of_docs):
+    for i in range(1, number_of_docs + 1):
         html_file = f'html/{i}.html'
         tokens = get_tokens(html_file)
         # Counter для токенов и для лемм в текущем документе
