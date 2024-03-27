@@ -10,11 +10,24 @@ from sklearn.metrics.pairwise import cosine_similarity
 from task4 import inverted_index_count, calculate_tf, calculate_idf
 from task4 import morph
 
-lemmas_file = "lemmas.txt"
-lemmas_tf_idf = "lemmas_tf-idf"  # tf-idf для лемм
-inverted_index_lemmas = "inverted_index.txt"
+here = os.path.dirname(os.path.abspath(__file__))
+
+lemmas_file = os.path.join(here, "lemmas.txt")
+lemmas_tf_idf = os.path.join(here, "lemmas_tf-idf")  # tf-idf для лемм
+inverted_index_lemmas = os.path.join(here, "inverted_index.txt")
+index = os.path.join(here, "index.txt")
 words = []
 number_of_docs = len(os.listdir(lemmas_tf_idf))
+
+def change_index_file_format():
+    with open('index.txt', 'r') as file:
+        content = file.read()
+
+    pattern = re.compile(r'<a\s+[^>]*href="([^"]*)"[^>]*>.*?</a>')
+    new_content = re.sub(pattern, r'\1', content)
+    with open('index.txt', 'w') as file:
+        file.write(new_content)
+
 
 with open(lemmas_file, 'r') as file:
     # количество строк в лемма файле
@@ -105,28 +118,21 @@ def calculate_similarities(query):
         similarity_dict[file_number] = similarity_value
     return dict(sorted(similarity_dict.items(), key=operator.itemgetter(1), reverse=True))
 
-
 def get_top_k_dict(dictionary, k):
     top_k_dict = {item: dictionary[item] for item in list(dictionary)[:k]}
     return top_k_dict
 
-
-# Обрабатываем запрос
-while True:
-    query = input("Введите запрос: ")
-    if query.lower() == 'exit':
-        exit()
-    try:
+def get_pages(query):
+    result_links = []
+    try :
         result = calculate_similarities(query)
         result = get_top_k_dict(result, 10)
         dict_items = result.items()
-        i = 1
-        with open('index.txt', 'r') as file:
+        with open(index, 'r') as file:
             links = file.read().splitlines()
             for key, value in dict_items:
                 if value > 0:
-                    print(f'{i}.', links[int(key) - 1])
-                    i += 1
+                    result_links.append(links[int(key) - 1].split(" ")[2])
+        return result_links
     except Exception as e:
-        print(f"Error occurred: {e}. Please try again")
-
+        return result_links

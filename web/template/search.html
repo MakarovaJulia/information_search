@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Поиск</title>
+    <style>
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+    }
+    body {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        height: 100vh;
+        gap: 2vh;
+        margin: 0;
+    }
+    input {
+        min-width: 70vh;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 2vh;
+    }
+</style>
+</head>
+<body>
+    <h1>Поиск</h1>
+    <form method="post">
+        {{ form.hidden_tag() }}
+        {{form.query.label()}}
+        {{form.query()}}
+        {{form.submit()}}
+    </form>
+    <h3 style="min-width: 70vh">Страницы:</h3>
+    {% if result_list is not none%}
+        {% if result_list%}
+            <div id="results">
+                <ul>
+                    {% for result in result_list %}
+                    <li style="min-width: 70vh; margin-bottom: 1vh">{{ loop.index }}. <a href="{{ result }}">{{ result }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <p>Ничего не найдено</p>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
